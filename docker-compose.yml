@@ -28,16 +28,20 @@ services:
       - "5678:5678"
     environment:
       # 1. 基础 URL 配置（解决 localhost 核心）
-      - N8N_HOST=192.168.1.10  # 实际访问的 IP（必须填你的 Ubuntu 主机 IP）
+      - N8N_HOST=172.23.128.1   # 实际访问的 IP（必须填你的 Ubuntu 主机 IP）
       - N8N_PROTOCOL=http       # 访问协议（http/https，你的场景用 http）
       - N8N_PORT=5678           # 实际访问的端口（与 -p 映射的端口一致）
       # 2. Webhook 回调地址配置（避免 Webhook 用 localhost）
-      - N8N_WEBHOOK_URL=http://192.168.1.10:5678  # 强制 Webhook 用实际 IP
+      - N8N_WEBHOOK_URL=http://172.23.128.1:5678  # 强制 Webhook 用实际 IP
       # 3. 原有代理和安全配置保留
       - http_proxy=http://proxy:8118
       - https_proxy=http://proxy:8118
       - no_proxy=localhost,127.0.0.1,.local,192.168.1.10  # 新增：本地 IP 不走代理
       - N8N_SECURE_COOKIE=false
+      - DB_SQLITE_POOL_SIZE=8096
+      - N8N_BLOCK_ENV_ACCESS_IN_NODE=false
+      - N8N_RUNNERS_ENABLED=true
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
     volumes:
       - n8n_data:/home/node/.n8n
     restart: always

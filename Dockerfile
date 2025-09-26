@@ -7,7 +7,7 @@ RUN apk update && \
     rm -rf /var/cache/apk/*
 
 # 配置代理转发
-RUN echo "forward-socks5 / 192.168.1.202:10808 ." >> /etc/privoxy/config && \
+RUN echo "forward-socks5 / 172.23.128.1:10808 ." >> /etc/privoxy/config && \
     echo "listen-address 0.0.0.0:8118" >> /etc/privoxy/config
 
 # 暴露代理端口
