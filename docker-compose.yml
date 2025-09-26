@@ -4,6 +4,9 @@ networks:
   proxy-network:
     driver: bridge
 
+volumes:
+  n8n_data:
+
 services:
   proxy:
     build: .
@@ -13,7 +16,6 @@ services:
       - proxy-network
     ports:
       - "8118:8118"
-    # 确保容器能访问到192.168.1.202
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
@@ -24,9 +26,18 @@ services:
       - proxy-network
     ports:
       - "5678:5678"
-    # 配置环境变量使用代理
     environment:
+      # 1. 基础 URL 配置（解决 localhost 核心）
+      - N8N_HOST=192.168.1.10  # 实际访问的 IP（必须填你的 Ubuntu 主机 IP）
+      - N8N_PROTOCOL=http       # 访问协议（http/https，你的场景用 http）
+      - N8N_PORT=5678           # 实际访问的端口（与 -p 映射的端口一致）
+      # 2. Webhook 回调地址配置（避免 Webhook 用 localhost）
+      - N8N_WEBHOOK_URL=http://192.168.1.10:5678  # 强制 Webhook 用实际 IP
+      # 3. 原有代理和安全配置保留
       - http_proxy=http://proxy:8118
       - https_proxy=http://proxy:8118
-      - no_proxy=localhost,127.0.0.1,.local
+      - no_proxy=localhost,127.0.0.1,.local,192.168.1.10  # 新增：本地 IP 不走代理
       - N8N_SECURE_COOKIE=false
+    volumes:
+      - n8n_data:/home/node/.n8n
+    restart: always
