@@ -24,15 +24,15 @@ services:
       - N8N_BASIC_AUTH_PASSWORD=your_secure_password  # 替换为你的密码
       - HTTP_PROXY=http://network-proxy:8888  # 指向HTTP代理容器
       - HTTPS_PROXY=http://network-proxy:8888  # HTTPS也通过HTTP代理转发
+      - N8N_WEBHOOK_URL=http://172.23.128.1:5678  # 强制 Webhook 用实际 IP
       - NO_PROXY=localhost,127.0.0.1,network-proxy
-      - N8N_HOST=localhost
+      - N8N_HOST=172.23.128.1
       - N8N_PORT=5678
       - N8N_PROTOCOL=http
       - NODE_ENV=production
       - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
       - PUID=1000
       - PGID=1000
-      - N8N_DISABLE_RUDDER=true  # 禁用Rudder避免额外代理问题
     ports:
       - "5678:5678"
     volumes:
